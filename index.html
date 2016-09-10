@@ -18,42 +18,88 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
 <!-- End API includes -->
 
+<!-- Start Prevent Anchor Jumps -->
+<script>
+$('#link1').click(function(event) { event.preventDefault(); return false; });
+$('#link2').click(function(event) { event.preventDefault(); return false; });
+$('#link3').click(function(event) { event.preventDefault(); return false; });
+$('#link4').click(function(event) { event.preventDefault(); return false; });
+</script>
+<!-- End Prevent Anchor Jumps -->
+
 </head>
 <body style="background-color:#DDDDDD">
 <div class="container-fluid">
-	<nav class="navbar navbar-dark bg-inverse">
-	  <div class="nav navbar-nav">
-	    <a class="nav-item nav-link active" href="index.html">Learn My Sites <span class="sr-only">(current)</span></a>
-	    <a class="nav-item nav-link" href="about.html">About</a>
-	  </div>
-	</nav>
+	<div class="masthead">
+		<h3 class="text-muted">Learn My Sites</h3>
+		<nav class="navbar navbar-dark bg-inverse">
+		  <div class="nav navbar-nav">
+		    <a class="nav-item nav-link active" href="index.html">Home<span class="sr-only">(current)</span></a>
+		    <a class="nav-item nav-link" href="about.html">About</a>
+		  </div>
+		</nav>
+	</div>
 
-	<h2> I want to stay on top of: </h2>
+	<div class="row">
+		<div class="col-sm-6">
+			<h3> I want to stay on top of: </h3>
 
-	<div class="card card-block" id="site_checkboxes">
-		<div class="form-check">
-		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input">
-		    www.hackernews.com
-		  </label>
+			<div class="card card-block" id="site_checkboxes">
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    www.hackernews.com
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    www.technobuffalo.com
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    www.youtube.com
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    Add your own...
+				  </label>
+				</div>
+			</div>
 		</div>
-		<div class="form-check">
-		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input">
-		    www.technobuffalo.com
-		  </label>
-		</div>
-		<div class="form-check">
-		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input">
-		    www.youtube.com
-		  </label>
-		</div>
-		<div class="form-check">
-		  <label class="form-check-label">
-		    <input type="checkbox" class="form-check-input">
-		    Add your own...
-		  </label>
+		<div class="col-sm-6">
+			<h3> My interests are: </h3>
+
+			<div class="card card-block" id="site_checkboxes">
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    Olympic Swimming
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    Programming
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    Great Memes
+				  </label>
+				</div>
+				<div class="form-check">
+				  <label class="form-check-label">
+				    <input type="checkbox" class="form-check-input">
+				    Add your own...
+				  </label>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -66,27 +112,29 @@
 	  	<li><a href="#">Menu 3</a></li>
 	</ul> -->
 
-	<div class="fluid-container"><h2 class="text-xs-left">Live Aggregator </h2></div><br>
+	<div class="fluid-container" style="display:inline"><h2 style="display:inline" class="text-xs-left">Live Aggregator </h2></div>
+	<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="alert('clicked')">Re-aggregate</button>
+	<br>
 	<div id="exTab3" class="fluid-container">	
 	<!-- Nav tabs -->
 	<ul class="nav nav-pills" role="tablist">
 	  <li class="nav-item">
-	    <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Swimming Interest 1</a>
+	    <a class="nav-link active" data-toggle="tab" href="#interest1" id="link1" role="tab">Swimming Interest 1</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Interest 2</a>
+	    <a class="nav-link" data-toggle="tab" href="#interest2" role="tab" id="link2">Interest 2</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" data-toggle="tab" href="#messages" role="tab">Interest 3</a>
+	    <a class="nav-link" data-toggle="tab" href="#interest3" role="tab" id="link3">Interest 3</a>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Interest 4</a>
+	    <a class="nav-link" data-toggle="tab" href="#interest4" role="tab" id="link4">Interest 4</a>
 	  </li>
 	</ul>
 
 	<!-- Tab panes -->
 	<div class="tab-content">
-	  <div class="tab-pane fade in active" id="home" role="tabpanel">
+	  <div class="tab-pane fade in active" id="interest1" role="tabpanel">
 	  	<div class="card card-block">
   			<h4 class="card-title">"Michael Phelps Gold Medal" -youtube.com</h4>
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
@@ -100,13 +148,13 @@
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
   		</div>
 	  </div>
-	  <div class="tab-pane fade" id="profile" role="tabpanel">
+	  <div class="tab-pane fade" id="interest2" role="tabpanel">
 	  	<div class="card card-block">
   			<h4 class="card-title">"Michael Phelps Gold Medal" -youtube.com</h4>
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
   		</div>
 	  </div>
-	  <div class="tab-pane fade" id="messages" role="tabpanel">
+	  <div class="tab-pane fade" id="interest3" role="tabpanel">
 	  	<div class="card card-block">
   			<h4 class="card-title">"Michael Phelps Gold Medal" -youtube.com</h4>
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
@@ -116,7 +164,7 @@
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
   		</div>
 	  </div>
-	  <div class="tab-pane fade" id="settings" role="tabpanel">
+	  <div class="tab-pane fade" id="interest4" role="tabpanel">
 		<div class="card card-block">
   			<h4 class="card-title">"Michael Phelps Gold Medal" -youtube.com</h4>
   			<p class="card-text">Incredible performans by Phelps yet again.</p>
