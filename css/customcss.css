@@ -1,0 +1,16 @@
+body {
+  padding : 10px ;
+  
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills > li > a {
+  border-radius: 4px 4px 4px 4px ;
+}
+
+#exTab3 .tab-content {
+  /*background-color: #428bca;*/
+  padding : 10px 15px;
+  border-radius: 4px 4px 4px 4px ;
+}
