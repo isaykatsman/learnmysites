@@ -16,10 +16,13 @@ var prepare_text = function(str){
  }
  
 var scrape_data = function(callback){
-   var RSS_feeds = [REUTERS_feed, BBC_feed];
+   var RSS_feeds = [BBC_feed];
    var articles = [];
    var finished_loading_count = 0;
+   var total_loading = 0;
+   var finished_loading = 0;
    RSS_feeds.forEach(function(obj, idx){
+
      $.get("https://crossorigin.me/"+obj, function(data){
         if (typeof data == "string"){
           var new_data = $.parseXML(data);
@@ -28,13 +31,13 @@ var scrape_data = function(callback){
         }
         console.log(new_data);
         var texts= [];
-        var total_loading = 0;
-        var finished_loading = 0;
         $(new_data).find("item").each(function(){
           var desc = $(this).find("description").text();
           var title = $(this).find("title").text();
           var link = $(this).find("link").text();
           total_loading +=1;
+          $('#label').text(""+finished_loading+"/"+total_loading+" articles analyzed");
+          $('#myBar').css("width", (100*finished_loading/total_loading).toString()+"%");
           // console.log(link);
           $.ajax({
             url: "https://crossorigin.me/"+$(this).find("link").text(),
@@ -52,10 +55,15 @@ var scrape_data = function(callback){
               articles.push({text: cur_words, meta: meta});
 
               finished_loading+=1;
-              console.log(finished_loading, total_loading);
-              if (total_loading == finished_loading && idx==RSS_feeds.length-1){
+              $('#label').text(""+finished_loading+"/"+total_loading+" articles analyzed");
+              $('#myBar').css("width", (100*finished_loading/total_loading).toString()+"%");
+              if (finished_loading == total_loading){
+                // $('#myProgress').fadeOut(1000, function(){
+                  // $(this).remove();
                 generateVoc(articles);
+                // });  
               }
+              console.log(finished_loading, total_loading);
             },
             error: function(){
               console.log("ERROR");
@@ -89,8 +97,6 @@ var scrape_data = function(callback){
       })
     });
     vocab = Object.keys(dict).sort(function(a, b){return dict[b]-dict[a];});
-    console.log(articles);
-    console.log(vocab);
     console.log("unique words: ", vocab.length);
     console.log("unique articles: ", articles.length);
     vocab = vocab.slice(0, VOCAB_LENGTH);

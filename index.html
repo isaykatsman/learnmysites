@@ -24,13 +24,14 @@
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script src="js/tSNE.js"></script>
 <script src="js/shit.js"></script>
-
+<script src="js/stemmer.js"></script>
 <script src="js/scraper.js"></script>
 <!-- End API includes -->
 
 </head>
 <body style="background-color:#DDDDDD">
 <div class="container-fluid">
+
 	<div class="masthead">
 		<h3 class="text-muted">Learn My Sites</h3>
 		<nav class="navbar navbar-dark bg-inverse">
@@ -85,12 +86,17 @@
 	  	<li><a href="#">Menu 2</a></li>
 	  	<li><a href="#">Menu 3</a></li>
 	</ul> -->
-
+<div id="myProgress">
+  <div id="myBar">
+    <div id="label">0/0 articles loaded.</div>
+  </div>
+</div>
+<br>
 	<div class="row border-between">
 		<div class="col-sm-6">
 			<div class="fluid-container" style="display:inline"><h2 style="display:inline" class="text-xs-left">Live Aggregator</h2></div>
 			&nbsp;&nbsp;
-			<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="window.location.reload();">Re-aggregate</button>
+			<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="aggregate();">Re-aggregate</button>
 			<br>
 			<div id="exTab3" class="fluid-container">	
 			<!-- Nav tabs -->
@@ -135,19 +141,24 @@
 <!-- start d3 data visualization -->
 <script src="js/kmeans.js"></script>
 <script>
+var g_data;
+var vocab;
+  scrape_data(function(data, vocab){
+    g_data = data.slice();
+    var vec_data = data.map(function(obj){return obj.vec});
+    var meta = data.map(function(obj){return obj.meta});
+    console.log(data);
+    setup(vec_data, meta, vocab);
+  });
 
 function aggregate() {
-	var g_data;
-	scrape_data(function(data){
-		g_data = data;
-		var vec_data = data.map(function(obj){return obj.vec});
-		var meta = data.map(function(obj){return obj.meta});
-		console.log(data);
-		setup(vec_data, meta);
-	});
+	var vec_data = g_data.map(function(obj){return obj.vec});
+  var meta = g_data.map(function(obj){return obj.meta});
+  console.log(g_data, vec_data, meta);
+  setup(vec_data, meta, vocab);
 }
 
-aggregate();
+// aggregate();
 </script>
 
 </body>

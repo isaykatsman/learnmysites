@@ -63,7 +63,7 @@ function getDataExtremes(data) {
 
 function initMeans(data, k) {
     if (!k){
-        k = Math.ceil(Math.pow(data.length,(1/2)));
+        k = Math.ceil(Math.pow(data.length,(1/2))/2);
     }
 
     while (k--) {
@@ -158,11 +158,9 @@ function setup(data, meta, vocab) {
 
     dataExtremes = getDataExtremes(data);
     dataRange = getDataRanges(dataExtremes);
-    means = initMeans(data);
 
+    means = initMeans(data);
     makeAssignments(data);
-    //graph initial data
-    //graph means
     console.log(means.length, means);
     //keep iterating k-means
     run(data, meta);
@@ -185,7 +183,7 @@ function runtSNEAndGraph(data, meta) {
   //run tsne on pts, then extract data and make a better plot
   var opt = {}
   opt.epsilon = 10;
-  opt.perplexity = 10;
+  opt.perplexity = 5;
   opt.dim = 2;
 
   var tsne = new tsnejs.tSNE(opt); //create tSNE instance
@@ -353,8 +351,9 @@ function getClusterNames(data, meta) {
     var count_keys = Object.keys(count);
     for(var j=0; j<count_keys.length; j++){
       // console.log(count[count_keys[j]]/(pool.length+0.0), count[count_keys[j]]);
-      count[count_keys[j]] = count[count_keys[j]]/pool.length* Math.log10(data.length/idf_count[count_keys[j]]);
+      count[count_keys[j]] = Math.pow(count[count_keys[j]]/pool.length, 5)*Math.log10(data.length/idf_count[count_keys[j]]);
     }
+    console.log(idf_count['korea']);
     var bestTerms =Object.keys(count).sort(function(a, b){return count[b]-count[a];});
     console.log(bestTerms);
     var bestTerm = count[bestTerms[0]];
@@ -423,6 +422,30 @@ function populateClusterFeed(data, meta) {
     }
 
     //populate tab content with (limit to 4?) all articles for this cluster
+    var cur_idx=0;
+    // for(var j=0; j < articles.length; j++){
+    //   var index = articles[j];
+    //   console.log(meta[index]);
+    //   var title = meta[index].title;
+    //   var desc = meta[index].desc;
+    //   if (title.toLowerCase().search(cluster_names[i].slice(1,4))!=-1 || desc.toLowerCase().search(cluster_names[i].slice(1,4))!=-1){
+    //     var tmp = articles[j];
+    //     articles[j] = articles[cur_idx];
+    //     articles[cur_idx] = tmp;
+    //     cur_idx+=1;
+    //   }
+    // }
+    var count = function(arr, val){
+      var count = 0;
+      for(var i = 0; i < arr.length; ++i){
+          if(arr[i] == val)
+              count++;
+      }
+      return count;
+    }
+    console.log(count(meta[0], cluster_names[i]));
+    console.log(cluster_names[i], articles);
+    articles = articles.sort(function(a, b){return count(meta[b].text, cluster_names[i]) - count(meta[a].text, cluster_names[i])});
     for(var j = 0; j < articles.length; j++) {
       var index = articles[j];
 
