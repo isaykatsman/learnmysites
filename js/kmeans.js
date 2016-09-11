@@ -289,7 +289,7 @@ function runtSNEAndGraph(data, meta) {
     }
   });
 
-  var labels = [
+ /* var labels = [
     [],
     ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH']
   ];
@@ -311,7 +311,7 @@ function runtSNEAndGraph(data, meta) {
               .attr('y', d3.select(point).attr('cy'))
               .text(labels[i][j])
       })
-  });
+  });*/
 
   //now that graphin has been performed populate cluster feed
   populateClusterFeed(data, meta);
