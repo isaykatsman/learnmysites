@@ -378,7 +378,13 @@ function populateClusterFeed(data, meta) {
   var cluster_names = getClusterNames(data, meta);
   //populate cluster feed using clusternmames
   var nondegen = 0; //nondegenerate index
+  var init1 = false;
+  var init2 = false;
+
   for(var i = 0; i < cluster_names.length; i++) {
+    if(cluster_names[i] == null) {
+      continue;
+    }
     //populate tab content corresponding to link title with top 3 entries from cluster - if less than 3 then skip
     if (cluster_names[i] === null){
       continue;
@@ -393,21 +399,24 @@ function populateClusterFeed(data, meta) {
       }
     }
 
-    if(cluster_size < 3) {
+    if(cluster_size < 1) {
       continue;
     }
 
     nondegen++;
 
     //populate tab title
-    if(i==0) {
-      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[i]+"</a></li>");
+
+    if(!init1) {
+      init1 = true;
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+(cluster_names[i].charAt(0).toUpperCase() + cluster_names[i].slice(1))+"</a></li>");
     } else {
-      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[i]+"</a></li>");
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+(cluster_names[i].charAt(0).toUpperCase() + cluster_names[i].slice(1))+"</a></li>");
     }
 
     //add tab content pane
-    if(i==0) {
+    if(!init2) {
+      init2 = true;
       $("#tabcontentparent").append("<div class=\"tab-pane fade in active\" id=\"interest"+(nondegen)+"\" role=\"tabpanel\"></div>");
     } else {
       $("#tabcontentparent").append("<div class=\"tab-pane fade in\" id=\"interest"+(nondegen)+"\" role=\"tabpanel\"></div>");
@@ -418,10 +427,12 @@ function populateClusterFeed(data, meta) {
       var index = articles[j];
 
       var title = meta[index].title;
+      title = title.trim();
       var desc = meta[index].desc;
+      var descArr = desc.split("<div");
       var link = meta[index].link;
 
-      $("#interest"+(nondegen)).append("<a href=\""+link+"\" style=\"color:black;text-decoration:none;\" onmouseover=\"this.style.background='#EEEEEE';\" onmouseout=\"this.style.background='#FFFFFF';\" target=\"_blank\" class=\"card card-block\"> <h4 class=\"card-title\">\""+title+"\" -youtube.com</h4>  <p class=\"card-text\">"+desc+"</p> </a>");
+      $("#interest"+(nondegen)).append("<a href=\""+link+"\" style=\"color:black;text-decoration:none;\" onmouseover=\"this.style.background='#EEEEEE';\" onmouseout=\"this.style.background='#FFFFFF';\" target=\"_blank\" class=\"card card-block\"> <h4 class=\"card-title\">\""+title+"\"</h4>  <p class=\"card-text\">"+descArr[0]+"</p> </a>");
     }
   }
 

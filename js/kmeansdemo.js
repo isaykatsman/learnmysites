@@ -206,7 +206,7 @@ function run() {
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(means[i][0]*scale, means[i][1]*scale, 5, 0, Math.PI * 2, true);
-        ctx.fillText("C"+i, means[i][0]*scale, means[i][1]*scale);
+        //ctx.fillText("C"+i, means[i][0]*scale, means[i][1]*scale);
         ctx.fill();
     }
 
