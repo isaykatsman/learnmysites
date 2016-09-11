@@ -49,7 +49,6 @@ var scrape_data = function(callback){
               meta.desc = desc;
               meta.link = link;
               meta.text = cur_words;
-
               articles.push({text: cur_words, meta: meta});
 
               finished_loading+=1;
