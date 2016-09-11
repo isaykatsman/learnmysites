@@ -58,9 +58,9 @@ function getDataExtremes(data) {
     return extremes;
 }
 
-function initMeans(k) {
+function initMeans(data, k) {
     if (!k){
-        k = Math.ceil(Math.pow(data.length,(1/2))/2);
+        k = Math.ceil(Math.pow(data.length,(1/2)));
     }
 
     while (k--) {
@@ -153,12 +153,12 @@ function setup(data, meta) {
 
     dataExtremes = getDataExtremes(data);
     dataRange = getDataRanges(dataExtremes);
-    means = initMeans(5);
+    means = initMeans(data);
 
      makeAssignments(data);
     //graph initial data
     //graph means
-    console.log(means);
+    console.log(means.length, means);
     //keep iterating k-means
     run(data);
 }

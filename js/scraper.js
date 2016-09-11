@@ -2,6 +2,7 @@ var BBC_feed = 'http://feeds.bbci.co.uk/news/world/rss.xml';
 // var NYT_feed = 'http://rss.nytimes.com/services/xml/rss/nyt/World.xml';
 var TBUF_feed='http://www.technobuffalo.com/feed/';
 var REUTERS_feed='http://feeds.reuters.com/Reuters/worldNews';
+var CNN_feed='http://rss.cnn.com/rss/cnn_world.rss';
 var USE_CREDENTIALS = false;
 
 
@@ -15,7 +16,7 @@ var prepare_text = function(str){
  }
  
 var scrape_data = function(callback){
-   var RSS_feeds = [REUTERS_feed, BBC_feed, ];
+   var RSS_feeds = [REUTERS_feed, BBC_feed, CNN_feed];
    var articles = [];
    var finished_loading_count = 0;
    RSS_feeds.forEach(function(obj, idx){
@@ -62,7 +63,7 @@ var scrape_data = function(callback){
                 generateVoc(articles);
               }
             },
-            timeout: 30000
+            timeout: 60000
           });
         });
          /* var cur_words = desc+' '+title;
