@@ -7,7 +7,7 @@
 
 <!-- Start API includes -->
 <!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/customcss.css">
+<link rel="stylesheet" href="css/customcss2.css">
 <link rel="stylesheet" href="css/scatterchart.css">
 
 <link rel="stylesheet" href="css/c3.min.css">
@@ -20,31 +20,129 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.0/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script src="js/tSNE.js"></script>
 <script src="js/shit.js"></script>
 <script src="js/scraper.js"></script>
 <!-- End API includes -->
 
+<script type="text/babel">
+  var Source = React.createClass({
+    render: function(){
+      return (
+        <div>
+          <input type="checkbox" value="None"/>
+          <a className="card card-block" href={this.props.url} style={{display: 'inline-block'}}>
+            {this.props.children}
+          </a>
+        </div>
+        )
+    }
+  })
+  var SourceForm = React.createClass({
+    getInitialState: function(){
+      return {item: ''};
+    },
+    handleSubmit: function(e){
+      function isURL(str) {
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return pattern.test(str);
+      }
+      e.preventDefault();
+      if (!isURL(this.state.item)) return;
+      this.props.onFormSubmit(this.state.item); 
+      this.setState({item: ''});
+      React.findDOMNode(this.refs.item).focus();
+      return;
+    },
+    onChange: function(e){ 
+      this.setState({ item: e.target.value }); 
+    },
+    render: function(){
+      return ( <form onSubmit={this.handleSubmit}> 
+        <input type='text' ref='item' onChange={this.onChange} value={this.state.item}/>
+         <input type='submit' value='Add'/> 
+         </form> 
+        );
+    }
+  });
+  var SourceList = React.createClass({
+    getInitialState: function(){ 
+      return {items: []};
+    },
+    updateItem: function(newItem){
+      var allItems = this.state.items.concat([newItem]);
+      this.setState({items: allItems});
+    },
+    render: function(){
+      var createSource = function(url){
+        return (<Source url={url}>{url}</Source>)
+      };
+      return (
+        <div>
+          <h3>Choose your sources</h3>
+          <div className="card card-block" style={{width: '325px'}}>
+            {this.state.items.map(createSource)}
+          <SourceForm onFormSubmit ={this.updateItems}/>
+          </div>
+        </div>
+        )
+    }
+  });
+  ReactDOM.render(<SourceList/>, document.getElementById('sources'));
+</script>
+
 </head>
+<body style="background-color:#000011">
 
-<body style="background-color:#111111">
+
+	<hr>
+
+	<!-- <ul class="nav nav-tabs">
+	  	<li class="active"><a href="#">Home</a></li>
+	  	<li><a href="#">Menu 1</a></li>
+	  	<li><a href="#">Menu 2</a></li>
+	  	<li><a href="#">Menu 3</a></li>
+	</ul> -->
+
+<div id="sidebar">
 <div class="container-fluid">
-		<div class="col-sm-6">
-			<div id="d3play"> <h2>2D Article Embedding t-SNE</h2> </div>
-			<div id="chart"></div>
-		</div>
+  <div class="masthead">
+    <h3 class="text-muted">Learn My Sites</h3>
+    <nav class="navbar navbar-dark bg-inverse" style='background-color: #000011!important;'>
+      <div class="nav navbar-nav">
+        <a class="nav-item nav-link active" href="index.html">Home<span class="sr-only">(current)</span></a>
+        <a class="nav-item nav-link" href="demo.html">Demo</a>
+        <a class="nav-item nav-link" href="about.html">About</a>
+      </div>
+    </nav>
+  </div>
 
+  <div class="row">
+    <div id='sources'></div>
+    
+  </div>
+	
+</div>
+</div>
+<div id="graph">
+<div class="col-sm-6">
+      <div id="d3play"> <h2>2D Article Embedding t-SNE</h2> </div>
+      <div id="chart"></div>
+</div>
 </div>
 
 <!-- start d3 data visualization -->
 <script src="js/kmeans.js"></script>
 <script>
-//init k-means
-//automatically calls tSNE and graphs
-//when converged
-// setup(test_data);
 var g_data;
 scrape_data(function(data){
   g_data = data;
@@ -53,8 +151,8 @@ scrape_data(function(data){
   console.log(data);
   setup(vec_data, meta);
 });
-</script>
 
+</script>
 
 </body>
 </html>

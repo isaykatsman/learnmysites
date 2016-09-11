@@ -27,3 +27,20 @@ body {
 .border-between > [class*='col-']:first-child:before {
  display: none;
 }
+
+#sidebar {
+    position:absolute;
+    top:0; bottom:0; left:0;
+    width:250px;
+    border-right-style: ridge;
+    border-right-width: thin;
+}
+
+#graph { 
+  position: absolute;
+  top: 0; left: 250;
+}
+.card {
+    background-color: #000011!important;
+    padding: 0rem!important;
+}
