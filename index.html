@@ -23,16 +23,9 @@
 
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script src="js/tSNE.js"></script>
+<script src="js/shit.js"></script>
+<script src="js/scraper.js"></script>t>
 <!-- End API includes -->
-
-<!-- Start Prevent Anchor Jumps -->
-<script>
-$('#link1').click(function(event) { event.preventDefault(); return false; });
-$('#link2').click(function(event) { event.preventDefault(); return false; });
-$('#link3').click(function(event) { event.preventDefault(); return false; });
-$('#link4').click(function(event) { event.preventDefault(); return false; });
-</script>
-<!-- End Prevent Anchor Jumps -->
 
 </head>
 <body style="background-color:#DDDDDD">
@@ -177,14 +170,7 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 			</div>
 			</div>
 		</div>
-		<div class="col-sm-6">
-			<div id="kmeans"> <h2>K-means Clustering</h2> </div>
-			<canvas id="canvas" width="500%" height="200" style="border:1px solid #000000;">
-			Your browser does not support the HTML5 canvas tag.
-			</canvas>
-			<div id="d3play"> <h2>2D Article Embedding t-SNE</h2> </div>
-			<div id="chart"></div>
-		</div>
+
 	</div>
 
 </div>
@@ -192,32 +178,15 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 <!-- start d3 data visualization -->
 <script src="js/kmeansdemo.js"></script>
 <script>
-//init k-means
-//automatically calls tSNE and graphs
-//when converged
-setup();
+var g_data;
+scrape_data(function(data){
+  g_data = data;
+  var vec_data = data.map(function(obj){return obj.vec});
+  var meta = data.map(function(obj){return obj.meta});
+  console.log(data);
+  setup(vec_data, meta);
+});
 </script>
-
-<script>
-/*
-var chart = c3.generate({
-    bindto: '#chart',
-    data: {
-      xs: {
-      	set1: 'set1_x',
-      	set2: 'set2_x',
-      },
-      columns: [
-      	['set1_x', 2.0, 5.0, 7.0, 9.0, 10.0, 12.0],
-      	['set2_x', 1.5, 3.4, 8.9, 9.6, 12.0, 14.0],
-        ['set1', 30, 200, 100, 400, 150, 250],
-        ['set2', 50, 20, 10, 40, 15, 25],
-      ],
-      type: 'scatter'
-    }
-});*/
-</script>
-<!-- end d3 data visualization -->
 
 </body>
 </html>
