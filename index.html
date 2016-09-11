@@ -10,6 +10,9 @@
 <link rel="stylesheet" href="css/customcss.css">
 <link rel="stylesheet" href="css/scatterchart.css">
 
+<link rel="stylesheet" href="css/c3.min.css">
+<script src="js/c3.min.js"></script>
+
 <!--<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>-->
 <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
@@ -19,6 +22,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
 
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js/tSNE.js"></script>
 <!-- End API includes -->
 
 <!-- Start Prevent Anchor Jumps -->
@@ -117,7 +121,7 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="fluid-container" style="display:inline"><h2 style="display:inline" class="text-xs-left">Live Aggregator </h2></div>
+			<div class="fluid-container" style="display:inline"><h2 style="display:inline" class="text-xs-left">Live Aggregator</h2></div>
 			<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="alert('clicked')">Re-aggregate</button>
 			<br>
 			<div id="exTab3" class="fluid-container">	
@@ -179,41 +183,45 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 			</div>
 		</div>
 		<div class="col-sm-6">
-			<div id="d3play"> <h2>Article Embedding </h2> </div>
+			<div id="kmeans"> <h2>K-means Clustering</h2> </div>
+			<canvas id="canvas" width="500%" height="200" style="border:1px solid #000000;">
+			Your browser does not support the HTML5 canvas tag.
+			</canvas>
+			<div id="d3play"> <h2>2D Article Embedding t-SNE</h2> </div>
+			<div id="chart"></div>
 		</div>
 	</div>
 
 </div>
 
 <!-- start d3 data visualization -->
-<script>		
-var dataset = [ 5, 10, 15, 20, 25 ];
+<script src="js/kmeans.js"></script>
+<script>
+//init k-means
+//automatically calls tSNE and graphs
+//when converged
+setup();
+</script>
 
-d3.select("body").selectAll("p")
-    .data(dataset)
-    .enter()
-    .append("p")
-    .text("New paragraph!");
-
-d3.select("body").selectAll("p")
-    .append("p")
-    .text("New paragraph!");
-
+<script>
 /*
-var dataset = [ 25, 7, 5, 26, 11 ];
-$(function () {
-d3.select("body").select("d3play")
-    .data(dataset)  // <-- The answer is here!
-    .enter()
-    .append("div")
-    .attr("class", "bar")
-    .style("height", function(d) {
-        var barHeight = d * 5;
-        return barHeight + "px";
-	}).style("fill","red");
+var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+      xs: {
+      	set1: 'set1_x',
+      	set2: 'set2_x',
+      },
+      columns: [
+      	['set1_x', 2.0, 5.0, 7.0, 9.0, 10.0, 12.0],
+      	['set2_x', 1.5, 3.4, 8.9, 9.6, 12.0, 14.0],
+        ['set1', 30, 200, 100, 400, 150, 250],
+        ['set2', 50, 20, 10, 40, 15, 25],
+      ],
+      type: 'scatter'
+    }
 });*/
 </script>
-<script type="text/javascript" src="js/scatterchart.js"></script>
 <!-- end d3 data visualization -->
 
 </body>
