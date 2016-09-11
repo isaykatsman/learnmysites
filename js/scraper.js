@@ -16,7 +16,7 @@ var prepare_text = function(str){
  }
  
 var scrape_data = function(callback){
-   var RSS_feeds = [REUTERS_feed, BBC_feed, CNN_feed];
+   var RSS_feeds = [REUTERS_feed, BBC_feed];
    var articles = [];
    var finished_loading_count = 0;
    RSS_feeds.forEach(function(obj, idx){
