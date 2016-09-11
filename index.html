@@ -157,12 +157,12 @@
 <script src="js/kmeans.js"></script>
 <script>
 var g_data;
-scrape_data(function(data){
+scrape_data(function(data, vocab){
   g_data = data;
   var vec_data = data.map(function(obj){return obj.vec});
   var meta = data.map(function(obj){return obj.meta});
-  console.log(data);
-  setup(vec_data, meta);
+  console.log(vocab);
+  setup(vec_data, meta, vocab);
 });
 
 </script>

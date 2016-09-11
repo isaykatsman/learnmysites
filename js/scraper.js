@@ -16,7 +16,7 @@ var prepare_text = function(str){
  }
  
 var scrape_data = function(callback){
-   var RSS_feeds = [REUTERS_feed, BBC_feed, CNN_feed];
+   var RSS_feeds = [REUTERS_feed, BBC_feed];
    var articles = [];
    var finished_loading_count = 0;
    RSS_feeds.forEach(function(obj, idx){
@@ -94,7 +94,7 @@ var scrape_data = function(callback){
     console.log("unique words: ", vocab.length);
     console.log("unique articles: ", articles.length);
     vocab = vocab.slice(0, VOCAB_LENGTH);
-    for(var i=0; i<40; i++){
+    for(var i=0; i<10; i++){
       console.log(vocab[i], dict[vocab[i]]);
     }
     articles.forEach(function(article){
@@ -106,8 +106,11 @@ var scrape_data = function(callback){
         }
       });
       article.vec = vec;
-
     });
-    callback(articles);
+    var mapping_vocab={}
+    vocab.forEach(function(obj, idx){
+      mapping_vocab[obj] = dict[vocab[idx]];
+    });
+    callback(articles, mapping_vocab);
   }
 }

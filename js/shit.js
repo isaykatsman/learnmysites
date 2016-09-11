@@ -14,7 +14,7 @@ var removeStopWords = function(array) {
         ['bbc', 1],
         ['us', 1],
         ['news', 1],
-        ['reuter', 1],
+        ['reuters', 1],
         //MY ADDITIONS
         ['a', 1],
         ['about', 1],

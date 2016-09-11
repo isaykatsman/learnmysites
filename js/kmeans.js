@@ -27,6 +27,7 @@ var assignments=[];
 var means = [];
 var drawDelay = 500;
 var scale = 10;
+var global_vocab = [];
 //colors for centroids;
 var colors = ['#FF0000','#00FF00','#0000FF','#F0FF0F','#A0AAAA','#0FFFF0','#CBFEBC','#0F0F0F','#1212FF'];
 
@@ -124,10 +125,10 @@ function moveMeans(data) {
     }
 
     for (var mean_index in sums) {
-        console.log(counts[mean_index]);
+        // console.log(counts[mean_index]);
         if (0 === counts[mean_index]) {
             sums[mean_index] = means[mean_index];
-            console.log("Mean with no points");
+            // console.log("Mean with no points");
             // console.log(sums[mean_index]);
 
             for (var dimension in dataExtremes) {
@@ -149,9 +150,11 @@ function moveMeans(data) {
     return moved;
 }
 
-function setup(data, meta) {
+function setup(data, meta, vocab) {
     console.log(data);
     console.log(meta);
+    console.log(vocab);
+    global_vocab = vocab;
 
     dataExtremes = getDataExtremes(data);
     dataRange = getDataRanges(dataExtremes);
@@ -169,7 +172,6 @@ function run(data, meta) {
     var moved = moveMeans(data);
     //draw();
 
-    console.log(data);
     if (moved) {
       run(data, meta);
     } else {
@@ -252,10 +254,6 @@ function runtSNEAndGraph(data, meta) {
       ],
       type: 'scatter'
     },
-    size: {
-      height: 500,
-      width: 1000
-    },
     axis: {
         x: {show: false},
         y: {show: false}
@@ -324,20 +322,49 @@ function mode(array)
 function getClusterNames(data, meta) {
   var cluster_names = [];
   var numclusters = Math.ceil(Math.pow(data.length,(1/2)));
-  console.log(numclusters);
-  var pool = []; // word pool
+  var idf_count = {};
+  for (var i=0; i<data.length; i++){
+    for (var j=0; j<meta[i].text.length; j++){
+      if(idf_count[meta[i].text[j]] == undefined){
+        idf_count[meta[i].text[j]] = 1;
+      } else{
+        idf_count[meta[i].text[j]] ++;
+      }
+    }
+  }
+  console.log(idf_count);
   for(var i = 0; i < numclusters; i++) {
+    var pool = []; // word pool
+    var count = {};
     for(var j = 0; j < data.length; j++) {
       //if cluster j is in cluster i then get it
       if(assignments[j] == i) {
         pool = pool.concat(meta[j].text);
-        console.log(pool);
+        // console.log(pool);
       }
     }
+    for(var j=0; j < pool.length; j++){
+      if(count[pool[j]]==undefined){
+        count[pool[j]] = 1;
+      } else{
+        count[pool[j]]+=1;
+      }
+    }
+    var count_keys = Object.keys(count);
+    for(var j=0; j<count_keys.length; j++){
+      // console.log(count[count_keys[j]]/(pool.length+0.0), count[count_keys[j]]);
+      count[count_keys[j]] = count[count_keys[j]]/pool.length* Math.log10(data.length/idf_count[count_keys[j]]);
+    }
+    var bestTerms =Object.keys(count).sort(function(a, b){return count[b]-count[a];});
+    console.log(bestTerms);
+    var bestTerm = count[bestTerms[0]];
+    // console.log("best score: ", count[count_keys[j]]/(pool.length+0.0), (global_vocab[count_keys[j]]/(count[count_keys[j]]+0.0)));
+    console.log(count[bestTerms[0]]);
+    console.log(count[bestTerms[1]]);
 
     //now assign cluster name, most frequent word in pool
-    cluster_names.push(mode(pool));
-    console.log('cluster: ' + mode(pool));
+    // cluster_names.push(mode(pool));
+    cluster_names.push(bestTerms[0]);
     //now reset pool and find mode for next cluster
     pool = [];
   }
@@ -349,11 +376,14 @@ function populateClusterFeed(data, meta) {
   //indices 0,1,2 - > clusterName1, clusterName2, clusterName2
   //order preservation expected
   var cluster_names = getClusterNames(data, meta);
-
   //populate cluster feed using clusternmames
   var nondegen = 0; //nondegenerate index
   for(var i = 0; i < cluster_names.length; i++) {
     //populate tab content corresponding to link title with top 3 entries from cluster - if less than 3 then skip
+    if (cluster_names[i] === null){
+      continue;
+    }
+    console.log(cluster_names[i]);
     var cluster_size = 0;
     var articles = [];
     for(var j = 0; j < data.length; j++) {
@@ -371,9 +401,9 @@ function populateClusterFeed(data, meta) {
 
     //populate tab title
     if(i==0) {
-      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[i]+"</a></li>");
     } else {
-      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[i]+"</a></li>");
     }
 
     //add tab content pane
