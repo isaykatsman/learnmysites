@@ -1,0 +1,46 @@
+body {
+  padding : 10px ;
+  
+}
+
+/* change border radius for the tab , apply corners on top*/
+
+#exTab3 .nav-pills > li > a {
+  border-radius: 4px 4px 4px 4px ;
+}
+
+#exTab3 .tab-content {
+  /*background-color: #428bca;*/
+  padding : 10px 15px;
+  border-radius: 4px 4px 4px 4px ;
+}
+
+.border-between > [class*='col-']:before {
+ background: #ccc;
+ bottom: 0;
+ content: " ";
+ left: 0;
+ position: absolute;
+ width: 1px;
+ top: 0;
+}
+.border-between > [class*='col-']:first-child:before {
+ display: none;
+}
+
+#sidebar {
+    position:absolute;
+    top:0; bottom:0; left:0;
+    width:250px;
+    border-right-style: ridge;
+    border-right-width: thin;
+}
+
+#graph { 
+  position: absolute;
+  top: 0; left: 250;
+}
+.card {
+    background-color: #000011!important;
+    padding: 0rem!important;
+}

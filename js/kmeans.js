@@ -250,6 +250,10 @@ function runtSNEAndGraph(data) {
       ],
       type: 'scatter'
     },
+    size: {
+      height: 500,
+      width: 1000
+    },
     axis: {
         x: {show: false},
         y: {show: false}

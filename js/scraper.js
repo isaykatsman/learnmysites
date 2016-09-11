@@ -16,7 +16,7 @@ var prepare_text = function(str){
  }
  
 var scrape_data = function(callback){
-   var RSS_feeds = [REUTERS_feed, BBC_feed];
+   var RSS_feeds = [REUTERS_feed, BBC_feed, CNN_feed];
    var articles = [];
    var finished_loading_count = 0;
    RSS_feeds.forEach(function(obj, idx){
@@ -33,11 +33,11 @@ var scrape_data = function(callback){
         $(new_data).find("item").each(function(){
           var desc = $(this).find("description").text();
           var title = $(this).find("title").text();
-          var link = "https://crossorigin.me/"+$(this).find("link").text();
+          var link = $(this).find("link").text();
           total_loading +=1;
           // console.log(link);
           $.ajax({
-            url: link,
+            url: "https://crossorigin.me/"+$(this).find("link").text(),
             xhrFields: {
               withCredentials: USE_CREDENTIALS
             },
@@ -47,6 +47,9 @@ var scrape_data = function(callback){
               var meta = {}
               meta.title = title;
               meta.desc = desc;
+              meta.link = link;
+              meta.text = cur_words;
+
               articles.push({text: cur_words, meta: meta});
 
               finished_loading+=1;
