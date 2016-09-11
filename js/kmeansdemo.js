@@ -1,5 +1,5 @@
 //2D point data
-var test_data = [  
+var data = [  
     [1, 2],
     [2, 1],
     [2, 4], 
@@ -23,10 +23,11 @@ var test_data = [
     [9, 9],
 ];
 
-var assignments=[];
 var means = [];
+var assignments = [];
 var drawDelay = 500;
-var scale = 10;
+var scale = 20;
+var tsnegraph;
 
 function getDataRanges(extremes) {  
     var ranges = [];
@@ -36,7 +37,7 @@ function getDataRanges(extremes) {
     return ranges;
 }
 
-function getDataExtremes(data) {
+function getDataExtremes(points) {
     var extremes = [];
     for (var i in data) {
         var point = data[i];
@@ -73,7 +74,7 @@ function initMeans(k) {
     return means;
 }
 
-function makeAssignments(data) {
+function makeAssignments() {
     for (var i in data) {
         var point = data[i];
         var distances = [];
@@ -91,11 +92,10 @@ function makeAssignments(data) {
         }
         assignments[i] = distances.indexOf( Math.min.apply(null, distances) );
     }
-    return assignments;
 }
 
-function moveMeans(data) {
-    makeAssignments(data);
+function moveMeans() {
+    makeAssignments();
 
     var sums = Array( means.length );
     var counts = Array( means.length );
@@ -126,7 +126,7 @@ function moveMeans(data) {
         if (0 === counts[mean_index]) {
             sums[mean_index] = means[mean_index];
             console.log("Mean with no points");
-            // console.log(sums[mean_index]);
+            console.log(sums[mean_index]);
 
             for (var dimension in dataExtremes) {
                 sums[mean_index][dimension] = dataExtremes[dimension].min + ( Math.random() * dataRange[dimension] );
@@ -147,53 +147,96 @@ function moveMeans(data) {
     return moved;
 }
 
-function setup(data, meta) {
-    console.log(data);
-    console.log(meta);
+function setup() {
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
+
+    //clear frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    means = [];
+    assignments = [];
+    if(tsnegraph != null) {
+      tsnegraph.unload();
+    }
 
     dataExtremes = getDataExtremes(data);
     dataRange = getDataRanges(dataExtremes);
-    means = initMeans(5);
+    means = initMeans(3);
 
-     makeAssignments(data);
+    makeAssignments();
     //graph initial data
+    for (var i = 0; i < data.length; i++) {
+        ctx.fillStyle = "#0000FF";
+        ctx.beginPath();
+        ctx.arc(data[i][0]*scale, data[i][1]*scale, 5, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+
     //graph means
     console.log(means);
+    for (var i = 0; i < means.length; i++) {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(means[i][0]*scale, means[i][1]*scale, 5, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+
     //keep iterating k-means
-    run(data);
+    setTimeout(run, drawDelay);
 }
 
-function run(data) {
-    var moved = moveMeans(data);
+function run() {
+    var moved = moveMeans();
     //draw();
 
-    console.log(data);
+    //clear frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    //graph initial data
+    for (var i = 0; i < data.length; i++) {
+        ctx.fillStyle = "#0000FF";
+        ctx.beginPath();
+        ctx.arc(data[i][0]*scale, data[i][1]*scale, 5, 0, Math.PI * 2, true);
+        ctx.fill();
+    }
+
+    //graph means
+    console.log(means);
+    for (var i = 0; i < means.length; i++) {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(means[i][0]*scale, means[i][1]*scale, 5, 0, Math.PI * 2, true);
+        ctx.fillText("C"+i, means[i][0]*scale, means[i][1]*scale);
+        ctx.fill();
+    }
+
     if (moved) {
-      run(data);
+        setTimeout(run, drawDelay);
     } else {
         //didn't move, we've finished, k-means has converged
         //run tSNE and then graph projected embedding with C3/D3
-        runtSNEAndGraph(data);
+        runtSNEAndGraph();
     }
 }
 
-function runtSNEAndGraph(data) {
+function runtSNEAndGraph() {
   //run tsne on pts, then extract data and make a better plot
   var opt = {}
   opt.epsilon = 10;
-  opt.perplexity = 10;
+  opt.perplexity = 2;
   opt.dim = 2;
 
   var tsne = new tsnejs.tSNE(opt); //create tSNE instance
 
   //init data with data and means
+  console.log(data);
   var points = data.concat(means);
 
   //initialize with points, not distances
   tsne.initDataRaw(points);
 
   //do 500 iterations of tSNE
-  for(var j = 0; j < 10000; j++) {
+  for(var j = 0; j < 1000; j++) {
     tsne.step(); // solution gets progressively better
   }
 
@@ -207,6 +250,7 @@ function runtSNEAndGraph(data) {
   //data for scatter plot
   //var data = [[5,3], [10,17], [15,4], [2,8]];
   var data2 = tSNEdata;
+  console.log(data2);
 
   //now graph data2 with c3
 
@@ -235,7 +279,7 @@ function runtSNEAndGraph(data) {
   my = ["MeansY"].concat(my);
   
   //now graph with c3
-  var chart = c3.generate({
+  tsnegraph = c3.generate({
     bindto: '#chart',
     data: {
       xs: {
