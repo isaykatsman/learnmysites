@@ -23,6 +23,8 @@
 
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script src="js/tSNE.js"></script>
+<script src="js/shit.js"></script>
+<script src="js/scraper.js"></script>
 <!-- End API includes -->
 
 <!-- Start Prevent Anchor Jumps -->
@@ -123,13 +125,13 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 			<!-- Nav tabs -->
 			<ul class="nav nav-pills" role="tablist">
 			  <li class="nav-item">
-			    <a class="nav-link active" data-toggle="tab" href="#interest1" id="link1" role="tab">Swimming Interest 1</a>
+			    <a class="nav-link active" data-toggle="tab" href="#interest1" id="link1" role="tab">Common Cluster 1</a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" data-toggle="tab" href="#interest2" role="tab" id="link2">Interest 2</a>
+			    <a class="nav-link" data-toggle="tab" href="#interest2" role="tab" id="link2">Common Cluster 2</a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" data-toggle="tab" href="#interest3" role="tab" id="link3">Interest 3</a>
+			    <a class="nav-link" data-toggle="tab" href="#interest3" role="tab" id="link3">Common Cluster 3</a>
 			  </li>
 			  <li class="nav-item">
 			    <a class="nav-link" data-toggle="tab" href="#interest4" role="tab" id="link4">Interest 4</a>
@@ -178,10 +180,6 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 			</div>
 		</div>
 		<div class="col-sm-6">
-			<div id="kmeans"> <h2>K-means Clustering</h2> </div>
-			<canvas id="canvas" width="500%" height="200" style="border:1px solid #000000;">
-			Your browser does not support the HTML5 canvas tag.
-			</canvas>
 			<div id="d3play"> <h2>2D Article Embedding t-SNE</h2> </div>
 			<div id="chart"></div>
 		</div>
@@ -190,12 +188,20 @@ $('#link4').click(function(event) { event.preventDefault(); return false; });
 </div>
 
 <!-- start d3 data visualization -->
-<script src="js/kmeansdemo.js"></script>
+<script src="js/kmeans.js"></script>
 <script>
 //init k-means
 //automatically calls tSNE and graphs
 //when converged
-setup();
+// setup(test_data);
+var g_data;
+scrape_data(function(data){
+  g_data = data;
+  var vec_data = data.map(function(obj){return obj.vec});
+  var meta = data.map(function(obj){return obj.meta});
+  console.log(data);
+  setup(vec_data, meta);
+});
 </script>
 
 <script>
