@@ -26,7 +26,8 @@ var data = [
 var means = [];
 var assignments = [];
 var drawDelay = 500;
-var scale = 10;
+var scale = 20;
+var tsnegraph;
 
 function getDataRanges(extremes) {  
     var ranges = [];
@@ -150,6 +151,14 @@ function setup() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
+    //clear frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    means = [];
+    assignments = [];
+    if(tsnegraph != null) {
+      tsnegraph.unload();
+    }
+
     dataExtremes = getDataExtremes(data);
     dataRange = getDataRanges(dataExtremes);
     means = initMeans(3);
@@ -157,7 +166,7 @@ function setup() {
     makeAssignments();
     //graph initial data
     for (var i = 0; i < data.length; i++) {
-        ctx.fillStyle = "#FF0000";
+        ctx.fillStyle = "#0000FF";
         ctx.beginPath();
         ctx.arc(data[i][0]*scale, data[i][1]*scale, 5, 0, Math.PI * 2, true);
         ctx.fill();
@@ -166,7 +175,7 @@ function setup() {
     //graph means
     console.log(means);
     for (var i = 0; i < means.length; i++) {
-        ctx.fillStyle = "#0000FF";
+        ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(means[i][0]*scale, means[i][1]*scale, 5, 0, Math.PI * 2, true);
         ctx.fill();
@@ -185,7 +194,7 @@ function run() {
 
     //graph initial data
     for (var i = 0; i < data.length; i++) {
-        ctx.fillStyle = "#FF0000";
+        ctx.fillStyle = "#0000FF";
         ctx.beginPath();
         ctx.arc(data[i][0]*scale, data[i][1]*scale, 5, 0, Math.PI * 2, true);
         ctx.fill();
@@ -194,7 +203,7 @@ function run() {
     //graph means
     console.log(means);
     for (var i = 0; i < means.length; i++) {
-        ctx.fillStyle = "#0000FF";
+        ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.arc(means[i][0]*scale, means[i][1]*scale, 5, 0, Math.PI * 2, true);
         ctx.fillText("C"+i, means[i][0]*scale, means[i][1]*scale);
@@ -270,7 +279,7 @@ function runtSNEAndGraph() {
   my = ["MeansY"].concat(my);
   
   //now graph with c3
-  var chart = c3.generate({
+  tsnegraph = c3.generate({
     bindto: '#chart',
     data: {
       xs: {
