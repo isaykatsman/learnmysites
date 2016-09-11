@@ -42,60 +42,38 @@
 		</nav>
 	</div>
 
-	<div class="row">
-		<div class="col-sm-6">
-			<h3> I want to stay on top of: </h3>
+	<h3> I want to stay informed of: </h3>
 
-			<div class="card card-block" id="site_checkboxes">
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input" checked>
-				    www.bbc.co.uk
-				  </label>
-				</div>
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input" checked>
-				    www.technobuffalo.com
-				  </label>
-				</div>
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input">
-				    Add your own...
-				  </label>
-				</div>
-			</div>
+	<div class="card card-block" id="site_checkboxes">
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input" checked>
+		    www.bbc.co.uk
+		  </label>
 		</div>
-		<div class="col-sm-6">
-			<h3> My interests are: </h3>
-
-			<div class="card card-block" id="site_checkboxes">
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input">
-				    Olympic Swimming
-				  </label>
-				</div>
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input">
-				    Programming
-				  </label>
-				</div>
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input">
-				    Great Memes
-				  </label>
-				</div>
-				<div class="form-check">
-				  <label class="form-check-label">
-				    <input type="checkbox" class="form-check-input">
-				    Add your own...
-				  </label>
-				</div>
-			</div>
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input" checked>
+		    www.technobuffalo.com
+		  </label>
+		</div>
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input" checked>
+		    www.feeds.reuters.com
+		  </label>
+		</div>
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input" checked>
+		    www.cnn.com/world
+		  </label>
+		</div>
+		<div class="form-check">
+		  <label class="form-check-label">
+		    <input type="checkbox" class="form-check-input">
+		    Add your own...
+		  </label>
 		</div>
 	</div>
 
@@ -108,10 +86,11 @@
 	  	<li><a href="#">Menu 3</a></li>
 	</ul> -->
 
-	<div class="row">
+	<div class="row border-between">
 		<div class="col-sm-6">
 			<div class="fluid-container" style="display:inline"><h2 style="display:inline" class="text-xs-left">Live Aggregator</h2></div>
-			<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="alert('clicked')">Re-aggregate</button>
+			&nbsp;&nbsp;
+			<button type="button" style="margin-top:-5px;margin-bottom:5px;" class="btn btn-outline-primary" onclick="window.location.reload();">Re-aggregate</button>
 			<br>
 			<div id="exTab3" class="fluid-container">	
 			<!-- Nav tabs -->
@@ -156,15 +135,19 @@
 <!-- start d3 data visualization -->
 <script src="js/kmeans.js"></script>
 <script>
-var g_data;
-scrape_data(function(data){
-  g_data = data;
-  var vec_data = data.map(function(obj){return obj.vec});
-  var meta = data.map(function(obj){return obj.meta});
-  console.log(data);
-  setup(vec_data, meta);
-});
 
+function aggregate() {
+	var g_data;
+	scrape_data(function(data){
+		g_data = data;
+		var vec_data = data.map(function(obj){return obj.vec});
+		var meta = data.map(function(obj){return obj.meta});
+		console.log(data);
+		setup(vec_data, meta);
+	});
+}
+
+aggregate();
 </script>
 
 </body>
