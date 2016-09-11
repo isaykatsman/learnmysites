@@ -387,7 +387,7 @@ function populateClusterFeed(data, meta) {
       }
     }
 
-    if(cluster_size < 3) {
+    if(cluster_size < 1) {
       continue;
     }
 
