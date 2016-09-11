@@ -289,29 +289,29 @@ function runtSNEAndGraph(data, meta) {
     }
   });
 
-  var labels = [
-    [],
-    ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH']
-  ];
-  // series
-  var series = chart.internal.main
-                  .selectAll('.' + c3.chart.internal.fn.CLASS.circles)[0];
-  // text layers
-  var texts = chart.internal.main
-                  .selectAll('.' + c3.chart.internal.fn.CLASS.chartTexts)
-                  .selectAll('.' + c3.chart.internal.fn.CLASS.chartText)[0]
-  series.forEach(function (series, i) {
-      var points = d3.select(series).selectAll('.' + c3.chart.internal.fn.CLASS.circle)[0]
-      points.forEach(function (point, j) {
-          d3.select(texts[i])
-              .append('text')
-              .attr('text-anchor', 'middle')
-              .attr('dy', '0.3em')
-              .attr('x', d3.select(point).attr('cx'))
-              .attr('y', d3.select(point).attr('cy'))
-              .text(labels[i][j])
-      })
-  });
+  // var labels = [
+  //   [],
+  //   ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH']
+  // ];
+  // // series
+  // var series = chart.internal.main
+  //                 .selectAll('.' + c3.chart.internal.fn.CLASS.circles)[0];
+  // // text layers
+  // var texts = chart.internal.main
+  //                 .selectAll('.' + c3.chart.internal.fn.CLASS.chartTexts)
+  //                 .selectAll('.' + c3.chart.internal.fn.CLASS.chartText)[0]
+  // series.forEach(function (series, i) {
+  //     var points = d3.select(series).selectAll('.' + c3.chart.internal.fn.CLASS.circle)[0]
+  //     points.forEach(function (point, j) {
+  //         d3.select(texts[i])
+  //             .append('text')
+  //             .attr('text-anchor', 'middle')
+  //             .attr('dy', '0.3em')
+  //             .attr('x', d3.select(point).attr('cx'))
+  //             .attr('y', d3.select(point).attr('cy'))
+  //             .text(labels[i][j])
+  //     })
+  // });
 
   //now that graphin has been performed populate cluster feed
   populateClusterFeed(data, meta);
@@ -388,8 +388,12 @@ function populateClusterFeed(data, meta) {
     nondegen++;
 
     //populate tab title
-    $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
-    
+    if(i==0) {
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
+    } else {
+      $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
+    }
+
     //add tab content pane
     if(i==0) {
       $("#tabcontentparent").append("<div class=\"tab-pane fade in active\" id=\"interest"+(nondegen)+"\" role=\"tabpanel\"></div>");
