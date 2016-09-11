@@ -27,6 +27,8 @@ var assignments=[];
 var means = [];
 var drawDelay = 500;
 var scale = 10;
+//colors for centroids;
+var colors = ['#FF0000','#00FF00','#0000FF','#F0FF0F','#A0AAAA','#0FFFF0','#CBFEBC','#0F0F0F','#1212FF'];
 
 function getDataRanges(extremes) {  
     var ranges = [];
@@ -155,29 +157,29 @@ function setup(data, meta) {
     dataRange = getDataRanges(dataExtremes);
     means = initMeans(data);
 
-     makeAssignments(data);
+    makeAssignments(data);
     //graph initial data
     //graph means
     console.log(means.length, means);
     //keep iterating k-means
-    run(data);
+    run(data, meta);
 }
 
-function run(data) {
+function run(data, meta) {
     var moved = moveMeans(data);
     //draw();
 
     console.log(data);
     if (moved) {
-      run(data);
+      run(data, meta);
     } else {
-        //didn't move, we've finished, k-means has converged
-        //run tSNE and then graph projected embedding with C3/D3
-        runtSNEAndGraph(data);
+      //didn't move, we've finished, k-means has converged
+      //run tSNE and then graph projected embedding with C3/D3
+      runtSNEAndGraph(data, meta);
     }
 }
 
-function runtSNEAndGraph(data) {
+function runtSNEAndGraph(data, meta) {
   //run tsne on pts, then extract data and make a better plot
   var opt = {}
   opt.epsilon = 10;
@@ -259,10 +261,25 @@ function runtSNEAndGraph(data) {
     },
     tooltip: {
         format: {
-            title: function (d) { return 'Cluster ' + d; },
+            title: function (d) {
+              for(var i = 0; i < tSNEmeans.length; i++) {
+                if(tSNEmeans[i][0]==d) {
+                  return 'Cluster centroid ' + i;
+                } else {
+                  //now loop through data
+                  for(var j = 0; j < tSNEdata.length; j++) {
+                    if(tSNEdata[j][0]==d) {
+                      return 'Cluster point ' + assignments[j];
+                    }
+                  }
+                }
+              }
+              return 'Cluster not centroid';
+            },
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                return format(value);
+                //var format = id === 'data1' ? d3.format(',') : d3.format('');
+                //return format(value);
+                return "";
             }
 //            value: d3.format(',') // apply this format to both y and y2
         }
@@ -271,4 +288,129 @@ function runtSNEAndGraph(data) {
         pattern: ['#0000FF', '#FF0000']
     }
   });
+
+  var labels = [
+    [],
+    ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH']
+  ];
+  // series
+  var series = chart.internal.main
+                  .selectAll('.' + c3.chart.internal.fn.CLASS.circles)[0];
+  // text layers
+  var texts = chart.internal.main
+                  .selectAll('.' + c3.chart.internal.fn.CLASS.chartTexts)
+                  .selectAll('.' + c3.chart.internal.fn.CLASS.chartText)[0]
+  series.forEach(function (series, i) {
+      var points = d3.select(series).selectAll('.' + c3.chart.internal.fn.CLASS.circle)[0]
+      points.forEach(function (point, j) {
+          d3.select(texts[i])
+              .append('text')
+              .attr('text-anchor', 'middle')
+              .attr('dy', '0.3em')
+              .attr('x', d3.select(point).attr('cx'))
+              .attr('y', d3.select(point).attr('cy'))
+              .text(labels[i][j])
+      })
+  });
+
+  //now that graphin has been performed populate cluster feed
+  populateClusterFeed(data, meta);
+}
+
+function mode(array)
+{
+    if(array.length == 0)
+      return null;
+    var modeMap = {};
+    var maxEl = array[0], maxCount = 1;
+    for(var i = 0; i < array.length; i++)
+    {
+      var el = array[i];
+      if(modeMap[el] == null)
+        modeMap[el] = 1;
+      else
+        modeMap[el]++;  
+      if(modeMap[el] > maxCount)
+      {
+        maxEl = el;
+        maxCount = modeMap[el];
+      }
+    }
+    return maxEl;
+}
+
+function getClusterNames(data, meta) {
+  var cluster_names = [];
+  var numclusters = Math.ceil(Math.pow(data.length,(1/2)));
+  console.log(numclusters);
+  var pool = []; // word pool
+  for(var i = 0; i < numclusters; i++) {
+    for(var j = 0; j < data.length; j++) {
+      //if cluster j is in cluster i then get it
+      if(assignments[j] == i) {
+        pool = pool.concat(meta[j].text);
+        console.log(pool);
+      }
+    }
+
+    //now assign cluster name, most frequent word in pool
+    cluster_names.push(mode(pool));
+    console.log('cluster: ' + mode(pool));
+    //now reset pool and find mode for next cluster
+    pool = [];
+  }
+  console.log(cluster_names);
+  return cluster_names;
+}
+
+function populateClusterFeed(data, meta) {
+  //indices 0,1,2 - > clusterName1, clusterName2, clusterName2
+  //order preservation expected
+  var cluster_names = getClusterNames(data, meta);
+
+  //populate cluster feed using clusternmames
+  var nondegen = 0; //nondegenerate index
+  for(var i = 0; i < cluster_names.length; i++) {
+    //populate tab content corresponding to link title with top 3 entries from cluster - if less than 3 then skip
+    var cluster_size = 0;
+    var articles = [];
+    for(var j = 0; j < data.length; j++) {
+      if(assignments[j] == i) {
+        cluster_size++;
+        articles.push(j);
+      }
+    }
+
+    if(cluster_size < 3) {
+      continue;
+    }
+
+    nondegen++;
+
+    //populate tab title
+    $("#tabnameparent").append("<li class=\"nav-item\"> <a class=\"nav-link active\" data-toggle=\"tab\" href=\"#interest"+(nondegen)+"\" id=\"link"+(nondegen)+"\" role=\"tab\">"+cluster_names[nondegen-1]+"</a></li>");
+    
+    //add tab content pane
+    if(i==0) {
+      $("#tabcontentparent").append("<div class=\"tab-pane fade in active\" id=\"interest"+(nondegen)+"\" role=\"tabpanel\"></div>");
+    } else {
+      $("#tabcontentparent").append("<div class=\"tab-pane fade in\" id=\"interest"+(nondegen)+"\" role=\"tabpanel\"></div>");
+    }
+
+    //populate tab content with (limit to 4?) all articles for this cluster
+    for(var j = 0; j < articles.length; j++) {
+      var index = articles[j];
+
+      var title = meta[index].title;
+      var desc = meta[index].desc;
+      var link = meta[index].link;
+
+      $("#interest"+(nondegen)).append("<a href=\""+link+"\" style=\"color:black;text-decoration:none;\" onmouseover=\"this.style.background='#EEEEEE';\" onmouseout=\"this.style.background='#FFFFFF';\" target=\"_blank\" class=\"card card-block\"> <h4 class=\"card-title\">\""+title+"\" -youtube.com</h4>  <p class=\"card-text\">"+desc+"</p> </a>");
+    }
+  }
+
+  /*loop through cluster_names
+    -populate link title
+    -add all children of this cluster id to that tab-pane
+  end loop*/
 }
